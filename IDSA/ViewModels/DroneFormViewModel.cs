@@ -72,33 +72,31 @@ namespace Icarus_Drone_Service_Application.ViewModels
         public bool CreateDrone()
         {
             // Validating properties of the new drone
-            if (ServiceTag == null || !Int32.TryParse(ServiceTag, out var validatedServiceTag))
+            if (string.IsNullOrWhiteSpace(ServiceTag) || !Int32.TryParse(ServiceTag, out var validatedServiceTag))
             {
                 UserFeedback = "ERROR: Service tag is empty or invalid";
                 return false;
             }
-            if (ServiceCost == null || !Double.TryParse(ServiceCost, out var validatedServiceCost))
+            if (string.IsNullOrWhiteSpace(ServiceCost) || !Double.TryParse(ServiceCost, out var validatedServiceCost))
             {
                 UserFeedback = "ERROR: Service cost is empty or invalid";
                 return false;
             }
-            if (ClientName == null)
+            if (string.IsNullOrWhiteSpace(ClientName))
             {
-                UserFeedback = "ERROR: Client name is empty";
+                UserFeedback = "ERROR: Client name is empty or invalid";
                 return false;
             }
-            if (DroneModel == null)
+            if (string.IsNullOrWhiteSpace(DroneModel))
             {
-                UserFeedback = "ERROR: Drone model is empty";
+                UserFeedback = "ERROR: Drone model is empty or invalid";
                 return false;
             }
-            if (ServiceProblem == null)
+            if (string.IsNullOrWhiteSpace(ServiceProblem))
             {
-                UserFeedback = "ERROR: Service problem is empty";
+                UserFeedback = "ERROR: Service problem is empty or invalid";
                 return false;
             }
-            string validatedClientName = Utils.ToTitleCase(ClientName);
-            string validatedServiceProblem = Utils.ToSentenceCase(ServiceProblem);
 
             NewDrone = new(validatedServiceTag, ClientName, DroneModel, ServiceProblem, validatedServiceCost);
             return true;
