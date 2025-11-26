@@ -21,9 +21,7 @@ namespace Icarus_Drone_Service_Application.Models
 
         private readonly string serviceProblem = serviceProblem;
         public string ServiceProblem => Utils.ToSentenceCase(serviceProblem);
-
-        private readonly double serviceCostModifier = 1.15;
         private readonly double serviceCost = serviceCost;
-        public double ServiceCost => serviceCost * serviceCostModifier;
+        public double ServiceCost => serviceCost;
     }
 }
