@@ -69,7 +69,10 @@ namespace Icarus_Drone_Service_Application.ViewModels
         }
 
 
-        public bool CreateDrone()
+        // ======== METHODS =========
+
+
+        public bool MakeDrone()
         {
             // Validating properties of the new drone
             if (string.IsNullOrWhiteSpace(ServiceTag) || !Int32.TryParse(ServiceTag, out var validatedServiceTag))
@@ -98,8 +101,13 @@ namespace Icarus_Drone_Service_Application.ViewModels
                 return false;
             }
 
-            NewDrone = new(validatedServiceTag, ClientName, DroneModel, ServiceProblem, validatedServiceCost);
+            NewDrone = new(validatedServiceTag, ClientName, DroneModel, ServiceProblem, validatedServiceCost, priorityExpress);
             return true;
+        }
+
+        public bool GetServicePriority()
+        {
+            return priorityExpress;
         }
     }
 }
