@@ -4,14 +4,97 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Icarus_Drone_Service_Application"
+        xmlns:vm="clr-namespace:Icarus_Drone_Service_Application.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <!-- Main GUI -->
     <Grid>
         <Grid>
-        <!-- Main Window GUI -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <!-- Menu Bar -->
+            <Menu Grid.Row="0" Grid.ColumnSpan="3" Background="Gray">
+
+            </Menu>
+
+            <!-- ListView Tabs -->
+            <DockPanel Grid.Row="1" Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    
+                    <Button Grid.Column="0" 
+                            Name="Btn_RegularService"
+                            Content="Regular"/>
+
+                    <Button Grid.Column="1" 
+                            Name="Btn_ExpressService"
+                            Content="Express"/>
+                    
+                </Grid>
+            </DockPanel>
+            
+            <!-- Drones ListView -->
+            <ListView Grid.Row="2" Grid.Column="0"
+                      ItemsSource="{Binding }">
+
+                <ListView.View>
+
+                    <GridView>
+
+                        <GridViewColumn />
+                        <GridViewColumn />
+
+                    </GridView>
+                    
+                </ListView.View>
+                
+            </ListView>
+
+            <!-- Finished Drones ListView -->
+            <ListView Grid.Row="2" Grid.Column="2">
+
+            </ListView>
+
+            <!-- Add Drone Button -->
+            <Button Grid.Row="1" Grid.Column="1"
+                    Name="Btn_OpenDroneForm"
+                    Content="+"/>
+
+            <!-- Feedback Message -->
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="3" 
+                       Background="Gray"
+                       Text="{Binding FeedbackMessage, UpdateSourceTrigger=PropertyChanged}">
+
+            </TextBlock>
+
         </Grid>
-        <Grid>
-            <!-- Drone Form Overlay: Binding to DroneForm VM-->
-        </Grid>
+        
+        <!-- Drone Form -->
+        <ContentControl DataContext="{Binding ActiveDroneForm}">
+
+        </ContentControl>
+        
+        <!-- Drone Information -->
+        
     </Grid>
 </Window>

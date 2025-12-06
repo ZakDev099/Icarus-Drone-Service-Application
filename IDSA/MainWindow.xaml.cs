@@ -19,9 +19,8 @@ namespace Icarus_Drone_Service_Application
     {
         public MainWindow()
         {
-            MainViewModel mainViewModel = new();
-            DataContext = mainViewModel;
             InitializeComponent();
         }
+
     }
 }
