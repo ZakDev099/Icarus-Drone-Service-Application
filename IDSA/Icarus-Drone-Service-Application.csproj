@@ -10,8 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="UserControls\" />
     <Folder Include="Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
