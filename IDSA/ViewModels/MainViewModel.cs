@@ -18,16 +18,27 @@ namespace Icarus_Drone_Service_Application.ViewModels
         public Queue<Drone> RegularService = [];
         // 6.4 :: "Create a 'global' Queue<T> of type Drone called 'ExpressService'” -> therefore I have it public
         public Queue<Drone> ExpressService = [];
-        public int SelectedQueue { get; set; }
-        public Queue<Drone> ActiveQueue
+
+        private string selectedQueue = "Regular";
+        public string SelectedQueue
+        {
+            get => selectedQueue;
+            set
+            {
+                selectedQueue = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ActiveQueue));
+            }
+        }
+        public IEnumerable<Drone> ActiveQueue
         {
             get
             {
                 return SelectedQueue switch
                 {
-                    0 => RegularService,
-                    1 => ExpressService,
-                    _ => ReturnWithFeedback(RegularService)
+                    "Regular" => RegularService.ToArray(),
+                    "Express" => ExpressService.ToArray(),
+                    _ => ReturnWithFeedback(RegularService).ToArray()
                 };
             }
         }
@@ -47,6 +58,21 @@ namespace Icarus_Drone_Service_Application.ViewModels
             }
         }
 
+        private Drone? selectedDrone = null;
+        public Drone? SelectedDrone
+        {
+            get => selectedDrone;
+            set
+            {
+                if (selectedDrone != value)
+                {
+                    selectedDrone = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
         private DroneFormViewModel? activeDroneForm = null;
         public DroneFormViewModel? ActiveDroneForm
         {
@@ -57,6 +83,23 @@ namespace Icarus_Drone_Service_Application.ViewModels
                 {
                     activeDroneForm = value;
                     OnPropertyChanged();
+                }
+            }
+        }
+
+        private int serviceTagTracker = 100;
+        public int ServiceTagTracker
+        {
+            get => serviceTagTracker;
+            set
+            {
+                if (value > 900)
+                {
+                    serviceTagTracker = 100;
+                }
+                else
+                {
+                    serviceTagTracker = value;
                 }
             }
         }
@@ -78,12 +121,15 @@ namespace Icarus_Drone_Service_Application.ViewModels
 
         // ====== UI COMMANDS ======
 
+        // 6.14 ::
+        public ICommand Cmd_SetActiveQueueToRegular => new RelayCommand(() => SelectedQueue = "Regular");
+        // 6.15 ::
+        public ICommand Cmd_SetActiveQueueToExpress => new RelayCommand(() => SelectedQueue = "Express");
 
-        public ICommand Cmd_SetActiveQueueToRegular => new RelayCommand(() => SelectedQueue = 0);
-        public ICommand Cmd_SetActiveQueueToExpress => new RelayCommand(() => SelectedQueue = 1);
+        public ICommand Cmd_MoveDroneToFinishedList => new RelayCommand(DequeueActiveQueue);
         public ICommand Cmd_OpenDroneForm => new RelayCommand(OpenDroneForm);
         public ICommand Cmd_CloseDroneForm => new RelayCommand(CloseDroneForm);
-
+        public ICommand Cmd_AddNewDrone => new RelayCommand(AddNewDrone);
 
 
         // ======== METHODS =========
@@ -95,32 +141,78 @@ namespace Icarus_Drone_Service_Application.ViewModels
             return input;
         }
 
-        private void OpenDroneForm() => ActiveDroneForm = new();
+        // 6.17 :: (Drone form is removed, along with all textbox data)
         private void CloseDroneForm() => ActiveDroneForm = null;
+        private void OpenDroneForm() => ActiveDroneForm = new(serviceTagTracker);
+
+        // Dequeues and moves drone from active queue into finished list
+        private void DequeueActiveQueue()
+        {
+            if (SelectedQueue == "Regular" && RegularService.Count > 0)
+            {
+                FinishedList.Add(RegularService.Dequeue());
+                FinishedList = new List<Drone>(FinishedList);
+                OnPropertyChanged(nameof(ActiveQueue));
+            }
+            else if (SelectedQueue == "Express" && ExpressService.Count > 0)
+            {
+                FinishedList.Add(ExpressService.Dequeue());
+                FinishedList = new List<Drone>(FinishedList);
+                OnPropertyChanged(nameof(ActiveQueue));
+            }
+            else
+            {
+                FeedbackMessage = "An error occured while attempting to move drone to finished list";
+            }
+        }
+
+        // 6.16 ::
+        public void DeleteDroneFromFinishedList()
+        {
+            if (SelectedDrone != null && finishedList.Contains(SelectedDrone))
+            {
+                FinishedList.Remove(SelectedDrone);
+                FinishedList = new List<Drone>(FinishedList);
+                SelectedDrone = null;
+            }
+            else
+            {
+                FeedbackMessage = "An error occured while attempting to delete drone from finished list";
+            }
+        }
 
         // 6.5 :: (Invoked using UI Command) -> UserControls.DroneFormControl
-        private void AddNewItem()
+        private void AddNewDrone()
         {
-            // If adding to Express Queue, remember to add +15% modifier when building the drone
-            if (ActiveDroneForm != null && ActiveDroneForm.MakeDrone() == true)
+            if (ActiveDroneForm != null && ActiveDroneForm.TryMakeDrone() == true)
             {
-                // 6.7 :: Create a custom method called “GetServicePriority” which returns the value of the priority radio group
-                // -> This naming is unclear and confusing but is required
                 if (ActiveDroneForm.GetServicePriority())
                 {
-                    ExpressService.Enqueue(ActiveDroneForm.NewDrone);
+                    ExpressService.Enqueue(ActiveDroneForm.NewDrone!);
+                    OnPropertyChanged(nameof(ActiveQueue));
+                    IncrementServiceTag();
+                    CloseDroneForm();
                 }
                 else
                 {
-                    RegularService.Enqueue(ActiveDroneForm.NewDrone);
+                    RegularService.Enqueue(ActiveDroneForm.NewDrone!);
+                    OnPropertyChanged(nameof(ActiveQueue));
+                    IncrementServiceTag();
+                    CloseDroneForm();
                 }
             }
             else
             {
                 return;
             }
+        }
 
-            
+        // 6.11 :: Create a custom method to increment the service tag control,
+        //      :: this method must be called inside the “AddNewItem” method before the new service
+        //      :: item is added to a queue. 
+        private void IncrementServiceTag()
+        {
+            ServiceTagTracker += 10;
         }
 
 

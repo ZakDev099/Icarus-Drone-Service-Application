@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  PALETTE  -->
+
+    <!--  Primary  -->
+    <Color x:Key="Primary.Dark">#FF000000</Color>
+    <Color x:Key="Primary.Outline">#FF787878</Color>
+    <Color x:Key="Primary.Main">#FFA4A4A4</Color>
+    <Color x:Key="Primary.Light">#FFF1F1F1</Color>
+
+    <!--  BRUSHES  -->
+
+    <!--  Primary  -->
+    <SolidColorBrush x:Key="Primary.DarkBrush" Color="{StaticResource Primary.Dark}" />
+    <SolidColorBrush x:Key="Primary.OutlineBrush" Color="{StaticResource Primary.Outline}" />
+    <SolidColorBrush x:Key="Primary.MainBrush" Color="{StaticResource Primary.Main}" />
+    <SolidColorBrush x:Key="Primary.LightBrush" Color="{StaticResource Primary.Light}" />
+
+</ResourceDictionary>

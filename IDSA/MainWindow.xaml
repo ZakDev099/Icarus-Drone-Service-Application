@@ -1,100 +1,240 @@
-﻿<Window x:Class="Icarus_Drone_Service_Application.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Icarus_Drone_Service_Application"
-        xmlns:vm="clr-namespace:Icarus_Drone_Service_Application.ViewModels"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+﻿<Window
+    x:Class="Icarus_Drone_Service_Application.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Icarus_Drone_Service_Application"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rs="clr-namespace:Icarus_Drone_Service_Application.Resources"
+    xmlns:uc="clr-namespace:Icarus_Drone_Service_Application.UserControls"
+    xmlns:vm="clr-namespace:Icarus_Drone_Service_Application.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
 
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <!-- Main GUI -->
+    <Window.Resources>
+
+        <rs:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
+        <DataTemplate x:Key="DroneDetailTemplate">
+
+            <Border Style="{StaticResource ListViews.ItemBorder}">
+                <TextBlock Style="{StaticResource ListViews.Item}" Text="{Binding}" />
+            </Border>
+
+        </DataTemplate>
+
+        <Style x:Key="DroneDetailColumn" TargetType="ListView">
+            <Setter Property="ItemTemplate" Value="{StaticResource DroneDetailTemplate}" />
+            <Setter Property="BorderThickness" Value="0,1,1,0" />
+        </Style>
+
+    </Window.Resources>
+
+    <!--  Main GUI  -->
     <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+        <Grid PreviewMouseDown="Grid_PreviewMouseDown">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="20" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
 
-            <!-- Menu Bar -->
-            <Menu Grid.Row="0" Grid.ColumnSpan="3" Background="Gray">
 
-            </Menu>
+            <!--  Menu Bar  -->
+            <Menu
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Background="Gray" />
 
-            <!-- ListView Tabs -->
+
+            <!--  ListView Tabs  -->
             <DockPanel Grid.Row="1" Grid.Column="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="20" />
                     </Grid.ColumnDefinitions>
 
-                    
-                    <Button Grid.Column="0" 
-                            Name="Btn_RegularService"
-                            Content="Regular"/>
 
-                    <Button Grid.Column="1" 
-                            Name="Btn_ExpressService"
-                            Content="Express"/>
-                    
+                    <Button
+                        Name="Btn_RegularService"
+                        Grid.Column="0"
+                        BorderThickness="0,0,1,0"
+                        Command="{Binding Cmd_SetActiveQueueToRegular}"
+                        Content="Regular" />
+
+                    <Button
+                        Name="Btn_ExpressService"
+                        Grid.Column="1"
+                        BorderThickness="0,0,1,0"
+                        Command="{Binding Cmd_SetActiveQueueToExpress}"
+                        Content="Express" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Style="{StaticResource ListViews.Heading}"
+                        Text="{Binding SelectedQueue}" />
+
+                    <Button
+                        Name="Btn_OpenDroneForm"
+                        Grid.Column="3"
+                        BorderThickness="1,0,1,0"
+                        Command="{Binding Cmd_OpenDroneForm}"
+                        Content="+"
+                        ToolTip="Add a new drone" />
+
+                    <Button
+                        Name="Btn_MoveDroneToFinished"
+                        Grid.Column="4"
+                        BorderThickness="0,0,1,0"
+                        Command="{Binding Cmd_MoveDroneToFinishedList}"
+                        Content="&gt;"
+                        ToolTip="Finish drone" />
+
                 </Grid>
             </DockPanel>
-            
-            <!-- Drones ListView -->
-            <ListView Grid.Row="2" Grid.Column="0"
-                      ItemsSource="{Binding }">
 
-                <ListView.View>
+            <!--  6.8 & 6.9 :: (Switches using tabs)  -->
+            <!--  Drones Main ListView  -->
+            <Grid Grid.Row="2" Grid.Column="0">
 
-                    <GridView>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                        <GridViewColumn />
-                        <GridViewColumn />
+                <ListView
+                    x:Name="DronesMainView"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    BorderThickness="0,1,1,0"
+                    ItemsSource="{Binding ActiveQueue}"
+                    SelectedItem="{Binding SelectedDrone, Mode=TwoWay}">
 
-                    </GridView>
-                    
-                </ListView.View>
-                
-            </ListView>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                x:Name="ColServiceTag"
+                                DisplayMemberBinding="{Binding ServiceTag}"
+                                Header="S.Tag" />
+                            <GridViewColumn
+                                x:Name="ColClientName"
+                                DisplayMemberBinding="{Binding ClientName}"
+                                Header="Client Name" />
+                            <GridViewColumn
+                                x:Name="ColDroneModel"
+                                DisplayMemberBinding="{Binding DroneModel}"
+                                Header="Drone Model" />
+                            <!--  Preventing Service Problem cell exanding too high  -->
+                            <GridViewColumn x:Name="ColServiceProblem" Header="Service Problem">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            MaxHeight="60"
+                                            Text="{Binding ServiceProblem}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
 
-            <!-- Finished Drones ListView -->
-            <ListView Grid.Row="2" Grid.Column="2">
+                            <GridViewColumn
+                                x:Name="ColServiceCost"
+                                DisplayMemberBinding="{Binding ServiceCost}"
+                                Header="Cost" />
+                        </GridView>
+                    </ListView.View>
 
-            </ListView>
+                </ListView>
 
-            <!-- Add Drone Button -->
-            <Button Grid.Row="1" Grid.Column="1"
-                    Name="Btn_OpenDroneForm"
-                    Content="+"/>
+                <!--  Drones Information Helper  -->
+                <ContentControl
+                    x:Name="DroneInformationHelper"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Content="{Binding SelectedDrone}"
+                    Visibility="{Binding SelectedDrone, Converter={StaticResource NullToVisibilityConverter}}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate>
+                            <uc:DroneDetailsBox />
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
 
-            <!-- Feedback Message -->
-            <TextBlock Grid.Row="3" Grid.ColumnSpan="3" 
-                       Background="Gray"
-                       Text="{Binding FeedbackMessage, UpdateSourceTrigger=PropertyChanged}">
+            </Grid>
 
-            </TextBlock>
+
+            <!--  Drones Finished Title  -->
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="2"
+                Style="{StaticResource ListViews.Heading}"
+                Text="Finished" />
+
+
+            <!--  Drones Finished ListView  -->
+
+            <ListBox
+                x:Name="DronesFinishedBox"
+                Grid.Row="2"
+                Grid.Column="1"
+                Background="{StaticResource Primary.LightBrush}"
+                ItemsSource="{Binding FinishedList}"
+                MouseDoubleClick="DronesFinishedBox_MouseDoubleClick"
+                SelectedItem="{Binding SelectedDrone, Mode=TwoWay}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+
+                        <TextBlock Text="{Binding ClientNameAndServiceCost}" />
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+
+            <!--  Feedback Message  -->
+            <Border
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Background="{StaticResource Primary.MainBrush}"
+                BorderThickness="1,0,0,0">
+                <TextBlock HorizontalAlignment="Right" Text="{Binding FeedbackMessage, UpdateSourceTrigger=PropertyChanged}" />
+            </Border>
 
         </Grid>
-        
-        <!-- Drone Form -->
-        <ContentControl DataContext="{Binding ActiveDroneForm}">
 
+        <!--  Drone Form  -->
+        <ContentControl Content="{Binding ActiveDroneForm}" Visibility="{Binding ActiveDroneForm, Converter={StaticResource NullToVisibilityConverter}}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <uc:DroneFormControl />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
         </ContentControl>
-        
-        <!-- Drone Information -->
-        
+
     </Grid>
 </Window>
