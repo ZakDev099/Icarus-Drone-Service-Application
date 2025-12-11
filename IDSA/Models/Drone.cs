@@ -8,50 +8,35 @@ using System.Windows.Media.Animation;
 
 namespace Icarus_Drone_Service_Application.Models
 {
-    // 6.1 :: No setters were needed as the object is not required to be mutable or expected to change after construction
-    public class Drone(int serviceTag, string clientName, string droneModel, string serviceProblem, double serviceCost)
+    public class Drone
     {
-        private int serviceTag = serviceTag;
-        public int ServiceTag
+        private int serviceTag;
+        private string clientName;
+        private string droneModel;
+        private string serviceProblem;
+        private double serviceCost;
+
+        public Drone(int serviceTag, string clientName, string droneModel, string serviceProblem, double serviceCost)
         {
-            get { return serviceTag; }
-            set { serviceTag = value; }
+            this.serviceTag = serviceTag;
+            this.clientName = clientName;
+            this.droneModel = droneModel;
+            this.serviceProblem = serviceProblem;
+            this.serviceCost = serviceCost;
         }
 
-        private string clientName = clientName;
-        public string ClientName
-        {
-            get { return Utils.ToTitleCase(clientName); }
-            set { clientName = value; }
-        }
+        public int ServiceTag { get => serviceTag; set => serviceTag = value; }
+        public string ClientName { get => Utils.ToTitleCase(clientName); set => clientName = value; }
+        public string DroneModel { get => droneModel; set => droneModel = value; }
+        public string ServiceProblem { get => Utils.ToSentenceCase(serviceProblem); set => serviceProblem = value; }
+        public double ServiceCost { get => serviceCost; set => serviceCost = value; }
 
-        private string droneModel = droneModel;
-        public string DroneModel
-        {
-            get { return droneModel; }
-            set { droneModel = value; }
-        }
-
-        private string serviceProblem = serviceProblem;
-        public string ServiceProblem
-        {
-            get { return Utils.ToSentenceCase(serviceProblem); }
-            set { serviceProblem = value; }
-        }
-
-        private double serviceCost = serviceCost;
-        public double ServiceCost
-        {
-            get { return serviceCost; }
-            set { serviceCost = value; }
-        }
-
-        // Added property for the XAML to reference
+        // Property for the XAML to reference
         public string ClientNameAndServiceCost => DisplayClientNameAndServiceCost();
 
 
-        // 6.1 :: "Add a display method that returns a string for Client Name and Service Cost"
-        private string DisplayClientNameAndServiceCost()
+        // 6.1 :: "Add a display method that returns a string for Client Name and Service Cost" - changed to public
+        public string DisplayClientNameAndServiceCost()
         {
             return $"Client Name: {ClientName}\nCost: {ServiceCost}";
         }
