@@ -11,20 +11,40 @@ namespace Icarus_Drone_Service_Application.Models
     // 6.1 :: No setters were needed as the object is not required to be mutable or expected to change after construction
     public class Drone(int serviceTag, string clientName, string droneModel, string serviceProblem, double serviceCost)
     {
-        private readonly int serviceTag = serviceTag;
-        public int ServiceTag => serviceTag;
+        private int serviceTag = serviceTag;
+        public int ServiceTag
+        {
+            get { return serviceTag; }
+            set { serviceTag = value; }
+        }
 
-        private readonly string clientName = clientName;
-        public string ClientName => Utils.ToTitleCase(clientName);
+        private string clientName = clientName;
+        public string ClientName
+        {
+            get { return Utils.ToTitleCase(clientName); }
+            set { clientName = value; }
+        }
 
-        private readonly string droneModel = droneModel;
-        public string DroneModel => droneModel;
+        private string droneModel = droneModel;
+        public string DroneModel
+        {
+            get { return droneModel; }
+            set { droneModel = value; }
+        }
 
-        private readonly string serviceProblem = serviceProblem;
-        public string ServiceProblem => Utils.ToSentenceCase(serviceProblem);
+        private string serviceProblem = serviceProblem;
+        public string ServiceProblem
+        {
+            get { return Utils.ToSentenceCase(serviceProblem); }
+            set { serviceProblem = value; }
+        }
 
-        private readonly double serviceCost = serviceCost;
-        public double ServiceCost => serviceCost;
+        private double serviceCost = serviceCost;
+        public double ServiceCost
+        {
+            get { return serviceCost; }
+            set { serviceCost = value; }
+        }
 
         // Added property for the XAML to reference
         public string ClientNameAndServiceCost => DisplayClientNameAndServiceCost();
