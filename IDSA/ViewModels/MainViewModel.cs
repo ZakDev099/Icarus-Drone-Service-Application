@@ -67,6 +67,25 @@ namespace Icarus_Drone_Service_Application.ViewModels
                 if (selectedDrone != value)
                 {
                     selectedDrone = value;
+                    if (selectedDrone != null)
+                    {
+                        OpenDroneForm(selectedDrone.ClientName, selectedDrone.ServiceProblem);
+                    }
+
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Drone? droneForDeletion = null;
+        public Drone? DroneForDeletion
+        {
+            get { return droneForDeletion; }
+            set
+            {
+                if (droneForDeletion != value)
+                {
+                    droneForDeletion = value;
                     OnPropertyChanged();
                 }
             }
@@ -81,6 +100,11 @@ namespace Icarus_Drone_Service_Application.ViewModels
             {
                 if (activeDroneForm != value)
                 {
+                    if (value == null)
+                    {
+                        SelectedDrone = null;
+                    }
+
                     activeDroneForm = value;
                     OnPropertyChanged();
                 }
@@ -145,6 +169,12 @@ namespace Icarus_Drone_Service_Application.ViewModels
         private void CloseDroneForm() => ActiveDroneForm = null;
         private void OpenDroneForm() => ActiveDroneForm = new(serviceTagTracker);
 
+        // 6.12 & 6.13 ::
+        private void OpenDroneForm(string? clientName, string? serviceProblem)
+        {
+            ActiveDroneForm = new(serviceTagTracker, clientName, serviceProblem);
+        }
+
         // Dequeues and moves drone from active queue into finished list
         private void DequeueActiveQueue()
         {
@@ -169,11 +199,11 @@ namespace Icarus_Drone_Service_Application.ViewModels
         // 6.16 ::
         public void DeleteDroneFromFinishedList()
         {
-            if (SelectedDrone != null && finishedList.Contains(SelectedDrone))
+            if (DroneForDeletion != null && finishedList.Contains(DroneForDeletion))
             {
-                FinishedList.Remove(SelectedDrone);
+                FinishedList.Remove(DroneForDeletion);
                 FinishedList = new List<Drone>(FinishedList);
-                SelectedDrone = null;
+                DroneForDeletion = null;
             }
             else
             {

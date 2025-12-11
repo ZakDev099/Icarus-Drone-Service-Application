@@ -39,7 +39,7 @@
 
     <!--  Main GUI  -->
     <Grid>
-        <Grid PreviewMouseDown="Grid_PreviewMouseDown">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
                 <RowDefinition Height="20" />
@@ -168,20 +168,6 @@
 
                 </ListView>
 
-                <!--  Drones Information Helper  -->
-                <ContentControl
-                    x:Name="DroneInformationHelper"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Content="{Binding SelectedDrone}"
-                    Visibility="{Binding SelectedDrone, Converter={StaticResource NullToVisibilityConverter}}">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate>
-                            <uc:DroneDetailsBox />
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
-
             </Grid>
 
 
@@ -202,7 +188,7 @@
                 Background="{StaticResource Primary.LightBrush}"
                 ItemsSource="{Binding FinishedList}"
                 MouseDoubleClick="DronesFinishedBox_MouseDoubleClick"
-                SelectedItem="{Binding SelectedDrone, Mode=TwoWay}">
+                SelectedItem="{Binding DroneForDeletion}">
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>

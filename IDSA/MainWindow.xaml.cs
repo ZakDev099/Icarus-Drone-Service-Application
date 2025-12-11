@@ -40,17 +40,6 @@ namespace Icarus_Drone_Service_Application
             ColServiceCost.Width = 2 * unit;
         }
 
-        // 6.12 ::
-        // 6.13 ::
-        private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Only clear if user clicked outside the ListView
-            if (!DronesMainView.IsMouseOver && 
-                !DronesFinishedBox.IsMouseOver &&
-                !DroneInformationHelper.IsMouseOver)
-                ((MainViewModel)DataContext).SelectedDrone = null;
-        }
-
         // 6.16 ::
         private void DronesFinishedBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

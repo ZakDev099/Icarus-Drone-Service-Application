@@ -16,10 +16,10 @@ using System.Windows.Controls;
 
 namespace Icarus_Drone_Service_Application.ViewModels
 {
-    public class DroneFormViewModel(int serviceTag) : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class DroneFormViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         public Drone? NewDrone = null;
-        public int ServiceTag => serviceTag;
+        public int ServiceTag { get; set; }
         public string? ClientName { get; set; }
         public string? DroneModel { get; set; }
         public string? ServiceProblem { get; set; }
@@ -82,6 +82,22 @@ namespace Icarus_Drone_Service_Application.ViewModels
         }
 
         private Dictionary<string, List<string>> propertyErrors = new();
+
+
+        // ======== Constructors =========
+
+
+        public DroneFormViewModel(int serviceTag)
+        {
+            this.ServiceTag = serviceTag;
+        }
+
+        public DroneFormViewModel(int serviceTag, string? clientName, string? serviceProblem)
+        {
+            this.ServiceTag = serviceTag;
+            this.ClientName = clientName;
+            this.ServiceProblem = serviceProblem;
+        }
 
 
         // ===== INotifyDataErrorInfo =====
