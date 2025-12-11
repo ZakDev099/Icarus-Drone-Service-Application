@@ -165,8 +165,16 @@ namespace Icarus_Drone_Service_Application.ViewModels
             return input;
         }
 
-        // 6.17 :: (Drone form is removed, along with all textbox data)
-        private void CloseDroneForm() => ActiveDroneForm = null;
+        // 6.17 :: (Will clear all the textboxes after each service item has been added)
+        private void CloseDroneForm()
+        {
+            ActiveDroneForm!.ClientName = null;
+            ActiveDroneForm!.DroneModel = null;
+            ActiveDroneForm!.ServiceProblem = null;
+            ActiveDroneForm!.ServiceCost = null;
+
+            ActiveDroneForm = null;
+        }
         private void OpenDroneForm() => ActiveDroneForm = new(serviceTagTracker);
 
         // 6.12 & 6.13 ::
