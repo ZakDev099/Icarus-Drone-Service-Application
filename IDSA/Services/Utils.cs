@@ -71,32 +71,24 @@ namespace Icarus_Drone_Service_Application.Services
             return result;
         }
 
-        // 6.10 :: "Create a custom method to ensure the Service Cost textbox can only accept a double value with two decimal point" -> very custom!
-        public static double LimitDecimalPlace(double input, int decimalLimit)
+        // 6.10 :: "Create a custom method to ensure the Service Cost textbox can only accept a double value with two decimal point"
+        public static bool IsDecimalWithinPlaceLimit(string input, int decimalLimit)
         {
-            string newDec = string.Empty;
-            bool decimalPointFound = false;
-            int decimalPos = 0;
+            var splitInput = input.Split('.');
 
-            foreach (char c in input.ToString())
+            // The string must contain only 1 instance of '.'
+            if (splitInput.Length != 2)
             {
-                if (c == '.' && !decimalPointFound)
-                {
-                    decimalPointFound = true;
-                    newDec += c;
-                }
-                else if (decimalPointFound && decimalPos < decimalLimit)
-                {
-                    decimalPos++;
-                    newDec += c;
-                }
-                else if (!decimalPointFound)
-                {
-                    newDec += c;
-                }
+                return false;
             }
 
-            return Double.Parse(newDec);
+            // The string must be exactly the decimal place limit
+            if (splitInput[1].Length != decimalLimit)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

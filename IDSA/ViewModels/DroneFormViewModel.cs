@@ -1,24 +1,40 @@
 ﻿using Icarus_Drone_Service_Application.Models;
+using Icarus_Drone_Service_Application.Resources;
 using Icarus_Drone_Service_Application.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Icarus_Drone_Service_Application.ViewModels
 {
-    public class DroneFormViewModel(int serviceTag) : INotifyPropertyChanged
+    public class DroneFormViewModel(int serviceTag) : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         public Drone? NewDrone = null;
         public int ServiceTag => serviceTag;
         public string? ClientName { get; set; }
         public string? DroneModel { get; set; }
         public string? ServiceProblem { get; set; }
-        public string? ServiceCost { get; set; }
+
+        private string? serviceCost;
+        public string? ServiceCost 
+        {
+            get => serviceCost;
+            set 
+            { 
+                serviceCost = value;
+                OnPropertyChanged();
+                ValidateProperty(nameof(ServiceCost), serviceCost);
+            }
+        }
         private readonly double ExpressFee = 1.15;
 
         private string? userFeedback;
@@ -65,6 +81,62 @@ namespace Icarus_Drone_Service_Application.ViewModels
             }
         }
 
+        private Dictionary<string, List<string>> propertyErrors = new();
+
+
+        // ===== INotifyDataErrorInfo =====
+
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        public System.Collections.IEnumerable GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName) || !propertyErrors.ContainsKey(propertyName))
+            {
+                return new List<string>();
+            }
+            return propertyErrors[propertyName];
+        }
+
+        public bool HasErrors => propertyErrors.Values.Any(list => list.Count > 0);
+
+        private void ValidateProperty(string propertyName, string? value)
+        {
+
+            if (propertyErrors.ContainsKey(propertyName))
+            {
+                propertyErrors[propertyName].Clear();
+            }
+            else
+            {
+                propertyErrors[propertyName] = new List<string>();
+            }
+
+            if (propertyName == nameof(ServiceCost))
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    propertyErrors[propertyName].Add("Service cost cannot be empty.");
+                }
+                else
+                {
+                    var validation = new TwoDecimalValidation();
+                    var result = validation.Validate(value, CultureInfo.CurrentCulture);
+
+                    if (!result.IsValid)
+                    {
+                        propertyErrors[propertyName].Add(result.ErrorContent?.ToString() ?? "Invalid service cost.");
+                    }
+                }
+            }
+
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+
+        // ===== INotifyPropertyChanged =====
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
@@ -78,19 +150,22 @@ namespace Icarus_Drone_Service_Application.ViewModels
         public bool TryMakeDrone()
         {
             // Validating properties of the new drone
-            if (string.IsNullOrWhiteSpace(ServiceCost) || !Double.TryParse(ServiceCost, out var validatedServiceCost))
+
+
+            // Validating ServiceCost Textbox has no errors
+            if (HasErrors || !double.TryParse(ServiceCost, out double validatedServiceCost))
             {
-                UserFeedback = "ERROR: Service cost is empty or invalid";
+                UserFeedback = "Input is invalid, expecting a numerical value with two decimal places.";
                 return false;
             }
+
             // 6.6 :: "Before a new service item is added to the Express Queue the service cost must be increased by 15%"
-            //     :: Yes, this occurs before the item is added to the express queue.
             if (PriorityExpress)
             {
-                validatedServiceCost *= ExpressFee;
+                validatedServiceCost = Math.Round(validatedServiceCost * ExpressFee, 2);
             }
-            validatedServiceCost = Utils.LimitDecimalPlace(validatedServiceCost, 2);
-
+            
+            // Validating other drone properties
             if (string.IsNullOrWhiteSpace(ClientName))
             {
                 UserFeedback = "ERROR: Client name is empty or invalid";

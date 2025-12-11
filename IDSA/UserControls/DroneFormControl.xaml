@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Icarus_Drone_Service_Application.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rs="clr-namespace:Icarus_Drone_Service_Application.Resources"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -83,8 +84,14 @@
         <TextBox
             Grid.Row="4"
             Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Text="{Binding ServiceCost}" />
+            Grid.ColumnSpan="2">
+            <TextBox.Text>
+                <Binding
+                    Path="ServiceCost"
+                    UpdateSourceTrigger="PropertyChanged"
+                    ValidatesOnNotifyDataErrors="True" />
+            </TextBox.Text>
+        </TextBox>
 
         <Label
             Grid.Row="5"
@@ -129,12 +136,14 @@
         </RadioButton>
 
 
-        <Label
+        <TextBlock
             Grid.Row="7"
             Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="{Binding UserFeedback}" />
+            Foreground="Red"
+            Text="{Binding UserFeedback}"
+            TextWrapping="WrapWithOverflow" />
         <Button
             Grid.Row="7"
             Grid.Column="0"
