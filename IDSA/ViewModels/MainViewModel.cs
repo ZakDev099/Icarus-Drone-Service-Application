@@ -129,7 +129,7 @@ namespace Icarus_Drone_Service_Application.ViewModels
         public ICommand Cmd_MoveDroneToFinishedList => new RelayCommand(DequeueActiveQueue);
         public ICommand Cmd_OpenDroneForm => new RelayCommand(OpenDroneForm);
         public ICommand Cmd_CloseDroneForm => new RelayCommand(CloseDroneForm);
-        public ICommand Cmd_AddNewDrone => new RelayCommand(AddNewDrone);
+        public ICommand Cmd_AddNewItem => new RelayCommand(AddNewItem);
 
 
         // ======== METHODS =========
@@ -182,22 +182,22 @@ namespace Icarus_Drone_Service_Application.ViewModels
         }
 
         // 6.5 :: (Invoked using UI Command) -> UserControls.DroneFormControl
-        private void AddNewDrone()
+        private void AddNewItem()
         {
             if (ActiveDroneForm != null && ActiveDroneForm.TryMakeDrone() == true)
             {
                 if (ActiveDroneForm.GetServicePriority())
                 {
+                    IncrementServiceTag();
                     ExpressService.Enqueue(ActiveDroneForm.NewDrone!);
                     OnPropertyChanged(nameof(ActiveQueue));
-                    IncrementServiceTag();
                     CloseDroneForm();
                 }
                 else
                 {
+                    IncrementServiceTag();
                     RegularService.Enqueue(ActiveDroneForm.NewDrone!);
                     OnPropertyChanged(nameof(ActiveQueue));
-                    IncrementServiceTag();
                     CloseDroneForm();
                 }
             }
