@@ -71,6 +71,7 @@ namespace Icarus_Drone_Service_Application.ViewModels
                     {
                         OpenDroneForm(selectedDrone.ClientName, selectedDrone.ServiceProblem);
                         FeedbackMessage = selectedDrone.DisplayClientNameAndServiceCost();
+                        FeedbackMessage = selectedDrone.DisplayClientNameAndServiceProblem();
                     }
 
                     OnPropertyChanged();

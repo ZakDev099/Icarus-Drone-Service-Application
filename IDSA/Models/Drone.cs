@@ -30,9 +30,15 @@ namespace Icarus_Drone_Service_Application.Models
         public string DroneModel { get => droneModel; set => droneModel = value; }
         public string ServiceProblem { get => Utils.ToSentenceCase(serviceProblem); set => serviceProblem = value; }
         public double ServiceCost { get => serviceCost; set => serviceCost = value; }
+        public string ClientNameAndServiceCost { get => DisplayClientNameAndServiceCost(); }
 
 
         // 6.1 :: "Add a display method that returns a string for Client Name and Service Cost" - changed to public
+        public string DisplayClientNameAndServiceProblem()
+        {
+            return $"Client Name: {ClientName} Service Problem: {ServiceProblem}";
+        }
+
         public string DisplayClientNameAndServiceCost()
         {
             return $"Client Name: {ClientName}\nCost: {ServiceCost}";
