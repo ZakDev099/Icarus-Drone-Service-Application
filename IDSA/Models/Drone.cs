@@ -34,11 +34,6 @@ namespace Icarus_Drone_Service_Application.Models
 
 
         // 6.1 :: "Add a display method that returns a string for Client Name and Service Cost" - changed to public
-        public string DisplayClientNameAndServiceProblem()
-        {
-            return $"Client Name: {ClientName} Service Problem: {ServiceProblem}";
-        }
-
         public string DisplayClientNameAndServiceCost()
         {
             return $"Client Name: {ClientName}\nCost: {ServiceCost}";

@@ -67,7 +67,6 @@ namespace Icarus_Drone_Service_Application.ViewModels
                 if (selectedDrone != value)
                 {
                     selectedDrone = value;
-
                     OnPropertyChanged();
                 }
             }
