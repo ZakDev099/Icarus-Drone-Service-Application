@@ -31,9 +31,6 @@ namespace Icarus_Drone_Service_Application.Models
         public string ServiceProblem { get => Utils.ToSentenceCase(serviceProblem); set => serviceProblem = value; }
         public double ServiceCost { get => serviceCost; set => serviceCost = value; }
 
-        // Property for the XAML to reference
-        public string ClientNameAndServiceCost => DisplayClientNameAndServiceCost();
-
 
         // 6.1 :: "Add a display method that returns a string for Client Name and Service Cost" - changed to public
         public string DisplayClientNameAndServiceCost()
