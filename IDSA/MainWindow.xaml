@@ -130,6 +130,7 @@
                     Grid.ColumnSpan="2"
                     BorderThickness="0,1,1,0"
                     ItemsSource="{Binding ActiveQueue}"
+                    MouseLeftButtonUp="DronesMainView_MouseLeftButtonUp"
                     SelectedItem="{Binding SelectedDrone, Mode=TwoWay}">
 
                     <ListView.View>

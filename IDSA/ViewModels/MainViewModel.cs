@@ -67,12 +67,6 @@ namespace Icarus_Drone_Service_Application.ViewModels
                 if (selectedDrone != value)
                 {
                     selectedDrone = value;
-                    if (selectedDrone != null)
-                    {
-                        OpenDroneForm(selectedDrone.ClientName, selectedDrone.ServiceProblem);
-                        FeedbackMessage = selectedDrone.DisplayClientNameAndServiceCost();
-                        FeedbackMessage = selectedDrone.DisplayClientNameAndServiceProblem();
-                    }
 
                     OnPropertyChanged();
                 }
@@ -180,9 +174,12 @@ namespace Icarus_Drone_Service_Application.ViewModels
         private void OpenDroneForm() => ActiveDroneForm = new(serviceTagTracker);
 
         // 6.12 & 6.13 ::
-        private void OpenDroneForm(string? clientName, string? serviceProblem)
+        public void DisplayDroneDetails()
         {
-            ActiveDroneForm = new(serviceTagTracker, clientName, serviceProblem);
+            if (SelectedDrone != null)
+            {
+                ActiveDroneForm = new(serviceTagTracker, SelectedDrone.ClientName, SelectedDrone.ServiceProblem);
+            }
         }
 
         // Dequeues and moves drone from active queue into finished list

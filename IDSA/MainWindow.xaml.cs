@@ -48,5 +48,14 @@ namespace Icarus_Drone_Service_Application
                 ((MainViewModel)DataContext).DeleteDroneFromFinishedList();
             }
         }
+
+        // 6.12 & 6.13 ::
+        private void DronesMainView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (DronesMainView.SelectedItem is Drone)
+            {
+                ((MainViewModel)DataContext).DisplayDroneDetails();
+            }
+        }
     }
 }
